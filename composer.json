@@ -1,0 +1,12 @@
+{
+    "name": "datonique/analytics-firer-php",
+    "description": "PHP composer package to fire analytics events to a configured gateway",
+    "type": "library",
+    "authors": [
+        {
+            "name": "George Torres",
+            "email": "george@datonique.com"
+        }
+    ],
+    "require": {}
+}
