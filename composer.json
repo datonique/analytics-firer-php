@@ -13,7 +13,7 @@
     },
     "autoload": {
         "psr-4": {
-            "datonique\\AnalyticsFirer\\": "src/"
+            "datonique\\": "src/"
         }
     },
     "require-dev": {
