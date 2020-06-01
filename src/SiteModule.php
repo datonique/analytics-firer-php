@@ -8,7 +8,7 @@ use datonique\AnalyticsFirer;
  * Reference to https://github.com/silverorange/site/blob/master/Site/SiteAnalyticsModule.php
  */
 
- class ApplicationModuleAnalyticsFirer 
+ class SiteModule
  {
     /**
 	 * Reference to the application object that contains this module
