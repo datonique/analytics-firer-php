@@ -6,11 +6,9 @@ use datonique\Session\Session;
 
 class Analytic {
 
-    // Browser/client properties
-
     // Event
     private $event_name;
-    private $timestamp;
+    private $unix_timestamp;
     private $session;
 
     /**
@@ -46,7 +44,7 @@ class Analytic {
             // general event information
             array(
                 'event_name' => $this->event_name,
-                'timestamp' => $this->timestamp,
+                'unix_timestamp' => $this->timestamp,
             )
         );
     }

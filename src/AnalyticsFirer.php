@@ -49,6 +49,28 @@ class AnalyticsFirer
             $httpConfig['handler'] = $config['handler'];
         }
 
+        // $provider = new \League\OAuth2\Client\Provider\GenericProvider([
+        //     'clientId'                => $config['client_id'],    // The client ID assigned to you by the provider
+        //     'clientSecret'            => $config['client_secret'],    // The client password assigned to you by the provider
+        //     // 'redirectUri'             => 'http://my.example.com/your-redirect-url/',
+        //     'urlAuthorize'            => 'http://service.example.com/authorize',
+        //     'urlAccessToken'          => 'https://hippoed.auth.us-east-2.amazoncognito.com/oauth2/token',
+        //     'urlResourceOwnerDetails' => 'http://service.example.com/resource'
+        // ]);
+        
+        // try {
+        
+        //     // Try to get an access token using the client credentials grant.
+        //     $accessToken = $provider->getAccessToken('client_credentials', ['scope' => 'aws.apig/sdk_access']);
+        
+        // } catch (\League\OAuth2\Client\Provider\Exception\IdentityProviderException $e) {
+        
+        //     // Failed to get the access token
+        //     echo "Cannot initiate analytics: Failed to get Access Token";
+        //     exit($e->getMessage());
+        
+        // }
+
         // add handler if available for testing
         $client = new HttpClient($httpConfig);
 
@@ -59,16 +81,40 @@ class AnalyticsFirer
         $this->session = new Session();
     }
 
-    public function buttonClick(string $button_name, string $page_name)
+    public function getSession()
     {
-        $button_analytic = new ButtonClick($button_name, $page_name);
+        return $this->session;
+    }
+
+    public function updateSession(Session $session)
+    {
+        $this->session = $session;
+    }
+
+    public function buttonClick(
+        string $button_name, 
+        string $html_page_title, 
+        string $page_php_class_name, 
+        string $page_url)
+    {
+        $button_analytic = new ButtonClick(        
+            $button_name, 
+            $html_page_title, 
+            $page_php_class_name, 
+            $page_url);
         $button_analytic->setSession($this->session);
         $this->firer->enqueue($button_analytic);
     }
 
-    public function pageView(string $page_name)
+    public function pageView(
+        string $html_page_title, 
+        string $page_php_class_name, 
+        string $page_url)
     {
-        $page_analytics = new PageView($page_name);
+        $page_analytics = new PageView( 
+            $html_page_title, 
+            $page_php_class_name, 
+            $page_url);
         $page_analytics->setSession($this->session);
         $this->firer->enqueue($page_analytics);
     }

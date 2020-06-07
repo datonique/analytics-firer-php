@@ -48,7 +48,7 @@ class AnalyticsFirerTest extends TestCase
     public function testFireEventButtonClick()
     {
         $analytics_firer = AnalyticsFirerHelper::createSuccessClient(1);
-        $analytics_firer->buttonClick('test_button', 'test_page');
+        $analytics_firer->buttonClick('test_button', 'test_page', 'test_page', 'test_page');
         $this->assertEquals(1, $analytics_firer->checkSuccess());
         $this->assertEquals(0, $analytics_firer->checkQueue());
     }
@@ -59,7 +59,7 @@ class AnalyticsFirerTest extends TestCase
     public function testFireEventPageView()
     {
         $analytics_firer = AnalyticsFirerHelper::createSuccessClient(1);
-        $analytics_firer->pageView('test_page');
+        $analytics_firer->pageView('test_page', 'test_page', 'test_page');
         $this->assertEquals(1, $analytics_firer->checkSuccess());
         $this->assertEquals(0, $analytics_firer->checkQueue());
     }
@@ -70,7 +70,7 @@ class AnalyticsFirerTest extends TestCase
     public function testFireEventButtonClickFailed()
     {
         $analytics_firer = AnalyticsFirerHelper::createFailureClient(1);
-        $analytics_firer->buttonClick('test_button', 'test_page');
+        $analytics_firer->buttonClick('test_button', 'test_page', 'test_page', 'test_page');
         $this->assertEquals(0, $analytics_firer->checkSuccess());
         $this->assertEquals(0, $analytics_firer->checkQueue());
         $this->assertEquals(1, $analytics_firer->checkFailed());
@@ -82,7 +82,7 @@ class AnalyticsFirerTest extends TestCase
     public function testFireEventPaigeViewFailed()
     {
         $analytics_firer = AnalyticsFirerHelper::createFailureClient(1);
-        $analytics_firer->pageView('test_page');
+        $analytics_firer->pageView('test_page', 'test_page', 'test_page');
         $this->assertEquals(0, $analytics_firer->checkSuccess());
         $this->assertEquals(0, $analytics_firer->checkQueue());
         $this->assertEquals(1, $analytics_firer->checkFailed());
@@ -107,6 +107,8 @@ class AnalyticsFirerHelper
             'max_queue_size' => 1, // to fire right away
             // just for testing
             'handler' => $handlerStack,
+            'client_id' => 'XXXX',
+            'client_secret' => 'XXXX'
         ]);
     }
 
