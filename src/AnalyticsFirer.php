@@ -49,27 +49,28 @@ class AnalyticsFirer
             $httpConfig['handler'] = $config['handler'];
         }
 
-        // $provider = new \League\OAuth2\Client\Provider\GenericProvider([
-        //     'clientId'                => $config['client_id'],    // The client ID assigned to you by the provider
-        //     'clientSecret'            => $config['client_secret'],    // The client password assigned to you by the provider
-        //     // 'redirectUri'             => 'http://my.example.com/your-redirect-url/',
-        //     'urlAuthorize'            => 'http://service.example.com/authorize',
-        //     'urlAccessToken'          => 'https://hippoed.auth.us-east-2.amazoncognito.com/oauth2/token',
-        //     'urlResourceOwnerDetails' => 'http://service.example.com/resource'
-        // ]);
+        $provider = new \League\OAuth2\Client\Provider\GenericProvider([
+            'clientId'                => '1rscqit98ubnret8jnhu6p6jvc',//$config['client_id'],    // The client ID assigned to you by the provider
+            'clientSecret'            => '1c7bdhidufb5pnisl7hq64hv9ab9rvbh2ummcc6kmgg3soa5deds', //$config['client_secret'],    // The client password assigned to you by the provider
+            // 'redirectUri'             => 'http://my.example.com/your-redirect-url/',
+            'urlAuthorize'            => 'https://hippoed.auth.us-east-2.amazoncognito.com/oauth2/token',
+            'urlAccessToken'          => 'https://hippoed.auth.us-east-2.amazoncognito.com/oauth2/token',
+            'urlResourceOwnerDetails' => 'https://hippoed.auth.us-east-2.amazoncognito.com/oauth2/token'
+        ]);
         
-        // try {
+        try {
         
-        //     // Try to get an access token using the client credentials grant.
-        //     $accessToken = $provider->getAccessToken('client_credentials', ['scope' => 'aws.apig/sdk_access']);
+            // Try to get an access token using the client credentials grant.
+            $accessToken = $provider->getAccessToken('client_credentials', ['scope' => 'aws.apig/sdk_access']);
         
-        // } catch (\League\OAuth2\Client\Provider\Exception\IdentityProviderException $e) {
+        } catch (\League\OAuth2\Client\Provider\Exception\IdentityProviderException $e) {
         
-        //     // Failed to get the access token
-        //     echo "Cannot initiate analytics: Failed to get Access Token";
-        //     exit($e->getMessage());
+            // Failed to get the access token
+            echo "Cannot initiate analytics: Failed to get Access Token";
+            echo $e;
+            exit($e->getMessage());
         
-        // }
+        }
 
         // add handler if available for testing
         $client = new HttpClient($httpConfig);
