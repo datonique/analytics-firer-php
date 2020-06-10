@@ -18,7 +18,7 @@ class Analytic {
      */
     public function __construct($event_name) {
         $this->event_name = $event_name;
-        $this->timestamp = round(microtime(true) * 1000);
+        $this->timestamp = time();
     }
 
     /**
