@@ -101,7 +101,6 @@ class AnalyticsFirerHelper
         $handlerStack = HandlerStack::create($mock);
 
         return new AnalyticsFirer([
-            'api_key' => '',
             'base_uri' => '/',
             'batch_size' => 1, // to fire right away
             'max_queue_size' => 1, // to fire right away
@@ -122,12 +121,13 @@ class AnalyticsFirerHelper
         $handlerStack = HandlerStack::create($mock);
 
         return new AnalyticsFirer([
-            'api_key' => '',
             'base_uri' => '/',
             'batch_size' => 1, // to fire right away
             'max_queue_size' => 1, // to fire right away
             // just for testing
             'handler' => $handlerStack,
+            'client_id' => 'XXXX',
+            'client_secret' => 'XXXX'
         ]);
     }
 }
