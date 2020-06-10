@@ -46,7 +46,7 @@ class AnalyticsFirer
             $httpConfig['handler'] = $config['handler'];
             $accessToken = 'XXXX';
         } else {
-            $accessToken = getAccessToken($config['client_id'], $config['client_secret']);
+            $accessToken = $this->getAccessToken($config['client_id'], $config['client_secret']);
         }
 
         $httpConfig['headers'] = array(
