@@ -119,7 +119,6 @@ class AnalyticsFirer
 
     private function getAccessToken(string $client_id, string $client_secret)
     {
-        if (isset($config['handler']))
         $provider = new \League\OAuth2\Client\Provider\GenericProvider([
             'clientId'                => $client_id,
             'clientSecret'            => $client_secret,
