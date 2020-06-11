@@ -6,6 +6,7 @@ use PHPUnit\Framework\TestCase;
 use datonique\Analytic\ButtonClick;
 use datonique\Analytic\PageView;
 use datonique\Session\Session;
+use datonique\Session\Cookie;
 /**
  * AnalyticsFirerTest Class
  *
@@ -29,13 +30,16 @@ class AnalyticTest extends TestCase
             'test_page_php_class_name',
             'test_page_url'
         );
-        $page_view->setSession(new Session());
+        $cookie = $this->createMock(Cookie::class);
+        $cookie->expects($this->once())->method('setCookie');
+        $page_view->setSession(new Session($cookie));
         $out_array = $page_view->toOutArray();
         $this->assertTrue(SessionTestHelper::testSessionInfoForAnalytic($out_array));
         $this->assertEquals($out_array['event_name'], 'pageview');
         $this->assertEquals($out_array['html_page_title'], 'test_page_html');
         $this->assertEquals($out_array['page_php_class_name'], 'test_page_php_class_name');
         $this->assertEquals($out_array['page_url'], 'test_page_url');
+
     }
 
     public function testButtonClick()
@@ -46,7 +50,9 @@ class AnalyticTest extends TestCase
             'test_page_php_class_name',
             'test_page_url'
         );
-        $page_view->setSession(new Session());
+        $cookie = $this->createMock(Cookie::class);
+        $cookie->expects($this->once())->method('setCookie');
+        $page_view->setSession(new Session($cookie));
         $out_array = $page_view->toOutArray();
         $this->assertTrue(SessionTestHelper::testSessionInfoForAnalytic($out_array));
         $this->assertEquals($out_array['event_name'], 'button_click');
@@ -63,5 +69,10 @@ class SessionTestHelper
     {
         return (isset($out_array['unix_timestamp']) && 
             isset($out_array['session_id']));
+    }
+
+    public static function getMockCookie()
+    {
+        return ;
     }
 }

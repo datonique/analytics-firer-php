@@ -3,6 +3,8 @@
 namespace datonique\Session;
 
 class Session {
+    private $cookie;
+
     /**
      * Required
      */
@@ -32,10 +34,12 @@ class Session {
      *
      * @param string                $button_name
      */
-    public function __construct()
+    public function __construct(Cookie $cookie)
     {
         // TODO: get unique ID
-        $this->session_id = "UUID"; 
+        $this->session_id = $this->getGuidV4(); 
+        $this->cookie = $cookie;
+        $this->cookie->setCookie('datonique_session_id', $this->session_id);
     }
 
     public function toOutArray()
@@ -66,4 +70,14 @@ class Session {
     }
 
     // TODO: set userID
+    private function getGuidV4()
+    {
+        $data = openssl_random_pseudo_bytes(16);
+        assert(strlen($data) == 16);
+
+        $data[6] = chr(ord($data[6]) & 0x0f | 0x40); // set version to 0100
+        $data[8] = chr(ord($data[8]) & 0x3f | 0x80); // set bits 6-7 to 10
+
+        return vsprintf('%s%s-%s-%s-%s-%s%s%s', str_split(bin2hex($data), 4));
+    }
 }

@@ -2,12 +2,14 @@
 
 namespace datonique;
 
+use Exception;
 use GuzzleHttp\Client as HttpClient;
 use GuzzleHttp\Command\Guzzle\GuzzleClient;
 use datonique\Analytic\ButtonClick;
 use datonique\Analytic\PageView;
 use datonique\Firer\Firer;
 use datonique\Session\Session;
+use datonique\Session\Cookie;
 
 
 /**
@@ -60,8 +62,13 @@ class AnalyticsFirer
         // Create the Client
         $this->firer = new Firer($client, $config);
 
-        // Start session if none
-        $this->session = new Session();
+
+        if (isset($config['mock_cookie'])) {
+            $this->session = new Session($config['mock_cookie']);    
+        } else {
+            // Start session if none
+            $this->session = new Session(new Cookie());
+        }
     }
 
     public function getSession()
@@ -132,8 +139,7 @@ class AnalyticsFirer
             return $provider->getAccessToken('client_credentials', ['scope' => 'aws.apig/sdk_access']);
         } catch (\League\OAuth2\Client\Provider\Exception\IdentityProviderException $e) {
             // Failed to get the access token
-            echo "Cannot initiate analytics: Failed to get Access Token\n";
-            exit($e->getMessage());
+            throw new Exception("Cannot initiate analytics: Failed to get Access Token: " . $e->getMessage());
         }
     }
 }
