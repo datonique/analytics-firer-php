@@ -36,10 +36,12 @@ class Session {
      */
     public function __construct(Cookie $cookie)
     {
-        // TODO: get unique ID
-        $this->session_id = $this->getGuidV4(); 
         $this->cookie = $cookie;
-        $this->cookie->setCookie('datonique_session_id', $this->session_id);
+        $this->session_id = $cookie->getCookie(Session::$COOKIE_SESSION_ID);
+        if (is_null($this->session_id)) {
+            $this->session_id = $this->getGuidV4();
+            $this->cookie->setCookie('datonique_session_id', $this->session_id);
+        }
     }
 
     public function toOutArray()
