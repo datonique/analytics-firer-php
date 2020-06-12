@@ -29,6 +29,7 @@ class Session {
     private $profession_id;
     private $profession_title;
 
+    static $COOKIE_SESSION_ID = 'datonique_session_id';
     /**
      * Constructor
      *
@@ -40,7 +41,7 @@ class Session {
         $this->session_id = $cookie->getCookie(Session::$COOKIE_SESSION_ID);
         if (is_null($this->session_id)) {
             $this->session_id = $this->getGuidV4();
-            $this->cookie->setCookie('datonique_session_id', $this->session_id);
+            $this->cookie->setCookie(Session::$COOKIE_SESSION_ID, $this->session_id);
         }
     }
 
