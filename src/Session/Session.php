@@ -36,7 +36,7 @@ class Session {
      *
      * @param string                $button_name
      */
-    public function __construct(Cookie $cookie)
+    public function __construct(Cookie $cookie, string $product_shortname, string $product_description)
     {
         $this->cookie = $cookie;
         $this->session_id = $cookie->getCookie(Session::$COOKIE_SESSION_ID);
@@ -44,6 +44,7 @@ class Session {
             $this->session_id = $this->getGuidV4();
             $this->cookie->setCookie(Session::$COOKIE_SESSION_ID, $this->session_id);
         }
+
         $browser = new Browser();
         $client_info = $browser->browser_detection('full_assoc');
         $this->os = $client_info['os'];
@@ -58,6 +59,13 @@ class Session {
         } else {
             $this->web_or_mobile = 'other';
         }
+
+        if (!isset($product_description) || !isset($product_shortname)) {
+            throw new Exception('Need product_description and product_shortname to initialize');
+        }
+        
+        $this->product_shortname = $product_shortname;
+        $this->product_description = $product_description;
     }
 
     public function toOutArray()

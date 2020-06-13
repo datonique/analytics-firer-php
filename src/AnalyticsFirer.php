@@ -36,13 +36,13 @@ class AnalyticsFirer
     {
         $httpConfig['base_uri'] = $config['base_uri'];
         if (is_null($config['base_uri'])) {
-            exit("Need a base_uri to initialize\n");
+            throw new Exception("Need a base_uri to initialize");
         }
         if (is_null($config['client_id'])) {
-            exit("Need a client_id to initialize\n");
+            throw new Exception("Need a client_id to initialize");
         }
         if (is_null($config['client_secret'])) {
-            exit("Need a client_secret to initialize\n");
+            throw new Exception("Need a client_secret to initialize");
         }
         if (isset($config['handler']) ) {
             $httpConfig['handler'] = $config['handler'];
@@ -62,12 +62,18 @@ class AnalyticsFirer
         // Create the Client
         $this->firer = new Firer($client, $config);
 
+        if(!isset($config['product_shortname'])) {
+            throw new Exception("Need a product_shortname to initialize");
+        }
+        if(!isset($config['product_description'])) {
+            throw new Exception("Need a product_description to initialize");
+        }
 
         if (isset($config['mock_cookie'])) {
-            $this->session = new Session($config['mock_cookie']);    
+            $this->session = new Session($config['mock_cookie'], $config['product_shortname'], $config['product_description']);    
         } else {
             // Start session if none
-            $this->session = new Session(new Cookie());
+            $this->session = new Session(new Cookie(), $config['product_shortname'], $config['product_description']);
         }
     }
 

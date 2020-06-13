@@ -1,6 +1,6 @@
 <?php
 
-namespace datonique\Browser;
+namespace datonique\Session;
 class Browser {
 
 /**
