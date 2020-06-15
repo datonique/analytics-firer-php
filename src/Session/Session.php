@@ -13,7 +13,7 @@ class Session {
     private $os_version;
     private $browser;
     private $broweser_version;
-    private $web_or_mobile;
+    private $platform;
     
     private $product_description;
     private $product_shortname;
@@ -31,6 +31,7 @@ class Session {
     private $profession_title;
 
     static $COOKIE_SESSION_ID = 'datonique_session_id';
+    static $MAX_SESSION_LENGTH = 60*30; // 30 min
     /**
      * Constructor
      *
@@ -40,9 +41,10 @@ class Session {
     {
         $this->cookie = $cookie;
         $this->session_id = $cookie->getCookie(Session::$COOKIE_SESSION_ID);
+
         if (is_null($this->session_id)) {
             $this->session_id = $this->getGuidV4();
-            $this->cookie->setCookie(Session::$COOKIE_SESSION_ID, $this->session_id);
+            $this->cookie->setCookie(Session::$COOKIE_SESSION_ID, $this->session_id, time()*Session::$MAX_SESSION_LENGTH);
         }
 
         $browser = new Browser();
@@ -52,18 +54,16 @@ class Session {
         $this->browser = $client_info['browser_name'];
         $this->browser_version = $client_info['browser_number'];
         
-        if ($client_info['ua_type'] == 'mobile') {
-            $this->web_or_mobile = 'mobile';
-        } else if ($client_info['ua_type'] == 'bro' || $client_info['ua_type'] == 'bbro' ) {
-            $this->web_or_mobile = 'web';
+        if ($client_info['ua_type'] == 'bro' || $client_info['ua_type'] == 'bbro' ) {
+            $this->platform = 'web';
         } else {
-            $this->web_or_mobile = 'other';
+            $this->platform = $client_info['ua_type'];
         }
 
         if (!isset($product_description) || !isset($product_shortname)) {
             throw new Exception('Need product_description and product_shortname to initialize');
         }
-        
+
         $this->product_shortname = $product_shortname;
         $this->product_description = $product_description;
     }
@@ -76,7 +76,7 @@ class Session {
             'os_version' => $this->os_version,
             'browser' => $this->browser,
             'broweser_version' => $this->browser_version,
-            'web_or_mobile' => $this->web_or_mobile,
+            'platform' => $this->platform,
             'product_description' => $this->product_description,
             'product_shortname' => $this->product_shortname,
             'visitor_id' => $this->session_id,
@@ -90,12 +90,6 @@ class Session {
         );
     }
 
-    private function isVisitor() 
-    {
-        return is_null($this->user_id);
-    }
-
-    // TODO: set userID
     private function getGuidV4()
     {
         $data = openssl_random_pseudo_bytes(16);
@@ -105,74 +99,5 @@ class Session {
         $data[8] = chr(ord($data[8]) & 0x3f | 0x80); // set bits 6-7 to 10
 
         return vsprintf('%s%s-%s-%s-%s-%s%s%s', str_split(bin2hex($data), 4));
-    }
-
-    private function getOS() { 
-        
-        if (is_null($this->user_agent)) {
-            throw new Exception("no user agent to get OS");
-        }
-        
-        $os_platform    =   "Unknown OS Platform";
-
-        $os_array       =   array(
-                                '/windows nt 10.0/i'    =>  'Windows 10',
-                                '/windows nt 6.2/i'     =>  'Windows 8',
-                                '/windows nt 6.1/i'     =>  'Windows 7',
-                                '/windows nt 6.0/i'     =>  'Windows Vista',
-                                '/windows nt 5.2/i'     =>  'Windows Server 2003/XP x64',
-                                '/windows nt 5.1/i'     =>  'Windows XP',
-                                '/windows xp/i'         =>  'Windows XP',
-                                '/windows nt 5.0/i'     =>  'Windows 2000',
-                                '/windows me/i'         =>  'Windows ME',
-                                '/win98/i'              =>  'Windows 98',
-                                '/win95/i'              =>  'Windows 95',
-                                '/win16/i'              =>  'Windows 3.11',
-                                '/macintosh|mac os x/i' =>  'Mac OS X',
-                                '/mac_powerpc/i'        =>  'Mac OS 9',
-                                '/linux/i'              =>  'Linux',
-                                '/ubuntu/i'             =>  'Ubuntu',
-                                '/iphone/i'             =>  'iPhone',
-                                '/ipod/i'               =>  'iPod',
-                                '/ipad/i'               =>  'iPad',
-                                '/android/i'            =>  'Android',
-                                '/blackberry/i'         =>  'BlackBerry',
-                                '/webos/i'              =>  'Mobile'
-                            );
-
-        foreach ($os_array as $regex => $value) { 
-            if (preg_match($regex, $this->user_agent)) {
-                $os_platform    =   $value;
-            }
-        }   
-
-        return $os_platform;
-    }
-
-    private function getBrowser() {
-        if (is_null($this->user_agent)) {
-            throw new Exception("no user agent to get browser");
-        }
-        $browser        =   "Unknown Browser";
-
-        $browser_array  =   array(
-                                '/msie/i'       =>  'Internet Explorer',
-                                '/firefox/i'    =>  'Firefox',
-                                '/safari/i'     =>  'Safari',
-                                '/chrome/i'     =>  'Chrome',
-                                '/opera/i'      =>  'Opera',
-                                '/netscape/i'   =>  'Netscape',
-                                '/maxthon/i'    =>  'Maxthon',
-                                '/konqueror/i'  =>  'Konqueror',
-                                '/mobile/i'     =>  'Handheld Browser'
-                            );
-
-        foreach ($browser_array as $regex => $value) { 
-            if (preg_match($regex, $this->user_agent)) {
-                $browser    =   $value;
-            }
-        }
-
-        return $browser;
     }
 }
