@@ -97,6 +97,8 @@ class AnalyticsFirerTest extends TestCase
             'base_uri' => '/',
             'batch_size' => 1, // to fire right away
             'max_queue_size' => 1, // to fire right away
+            'product_shortname' => 'test_name',
+            'product_description' => 'test_description',
             // just for testing
             'client_id' => 'XXXX',
             'client_secret' => 'XXXX'
@@ -119,6 +121,8 @@ class AnalyticsFirerHelper
             'base_uri' => '/',
             'batch_size' => 1, // to fire right away
             'max_queue_size' => 1, // to fire right away
+            'product_shortname' => 'test_name',
+            'product_description' => 'test_description',
             // just for testing
             'handler' => $handlerStack,
             'client_id' => 'XXXX',
@@ -141,6 +145,8 @@ class AnalyticsFirerHelper
             'base_uri' => '/',
             'batch_size' => 1, // to fire right away
             'max_queue_size' => 1, // to fire right away
+            'product_shortname' => 'test_name',
+            'product_description' => 'test_description',
             // just for testing
             'handler' => $handlerStack,
             'client_id' => 'XXXX',

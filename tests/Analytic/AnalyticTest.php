@@ -32,7 +32,7 @@ class AnalyticTest extends TestCase
         );
         $cookie = $this->createMock(Cookie::class);
         $cookie->expects($this->once())->method('setCookie');
-        $page_view->setSession(new Session($cookie));
+        $page_view->setSession(new Session($cookie, 'test_name', 'test_description'));
         $out_array = $page_view->toOutArray();
         $this->assertTrue(SessionTestHelper::testSessionInfoForAnalytic($out_array));
         $this->assertEquals($out_array['event_name'], 'pageview');
@@ -52,7 +52,7 @@ class AnalyticTest extends TestCase
         );
         $cookie = $this->createMock(Cookie::class);
         $cookie->expects($this->once())->method('setCookie');
-        $page_view->setSession(new Session($cookie));
+        $page_view->setSession(new Session($cookie, 'test_name', 'test_description'));
         $out_array = $page_view->toOutArray();
         $this->assertTrue(SessionTestHelper::testSessionInfoForAnalytic($out_array));
         $this->assertEquals($out_array['event_name'], 'button_click');

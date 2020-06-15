@@ -8,12 +8,13 @@ class Session {
     /**
      * Required
      */
-    private $session_id;
+    public $session_id;
     private $os;
     private $os_version;
-    private $browswer;
+    private $browser;
     private $broweser_version;
-    private $web_or_mobile;
+    private $platform;
+    
     private $product_description;
     private $product_shortname;
 
@@ -30,19 +31,41 @@ class Session {
     private $profession_title;
 
     static $COOKIE_SESSION_ID = 'datonique_session_id';
+    static $MAX_SESSION_LENGTH = 60*30; // 30 min
     /**
      * Constructor
      *
      * @param string                $button_name
      */
-    public function __construct(Cookie $cookie)
+    public function __construct(Cookie $cookie, string $product_shortname, string $product_description)
     {
         $this->cookie = $cookie;
         $this->session_id = $cookie->getCookie(Session::$COOKIE_SESSION_ID);
+
         if (is_null($this->session_id)) {
             $this->session_id = $this->getGuidV4();
-            $this->cookie->setCookie(Session::$COOKIE_SESSION_ID, $this->session_id);
+            $this->cookie->setCookie(Session::$COOKIE_SESSION_ID, $this->session_id, time()*Session::$MAX_SESSION_LENGTH);
         }
+
+        $browser = new Browser();
+        $client_info = $browser->browser_detection('full_assoc');
+        $this->os = $client_info['os'];
+        $this->os_version = $client_info['os_number'];
+        $this->browser = $client_info['browser_name'];
+        $this->browser_version = $client_info['browser_number'];
+        
+        if ($client_info['ua_type'] == 'bro' || $client_info['ua_type'] == 'bbro' ) {
+            $this->platform = 'web';
+        } else {
+            $this->platform = $client_info['ua_type'];
+        }
+
+        if (!isset($product_description) || !isset($product_shortname)) {
+            throw new Exception('Need product_description and product_shortname to initialize');
+        }
+
+        $this->product_shortname = $product_shortname;
+        $this->product_description = $product_description;
     }
 
     public function toOutArray()
@@ -51,9 +74,9 @@ class Session {
             'session_id' => $this->session_id,
             'os' => $this->os,
             'os_version' => $this->os_version,
-            'browswer' => $this->browswer,
-            'broweser_version' => $this->broweser_version,
-            'web_or_mobile' => $this->web_or_mobile,
+            'browser' => $this->browser,
+            'broweser_version' => $this->browser_version,
+            'platform' => $this->platform,
             'product_description' => $this->product_description,
             'product_shortname' => $this->product_shortname,
             'visitor_id' => $this->session_id,
@@ -67,12 +90,6 @@ class Session {
         );
     }
 
-    private function isVisitor() 
-    {
-        return is_null($this->user_id);
-    }
-
-    // TODO: set userID
     private function getGuidV4()
     {
         $data = openssl_random_pseudo_bytes(16);
