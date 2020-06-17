@@ -104,7 +104,7 @@ class Session {
         return vsprintf('%s%s-%s-%s-%s-%s%s%s', str_split(bin2hex($data), 4));
     }
 
-    public function setIsNewSession(bool $new_sessin) 
+    public function setIsNewSession(bool $new_session)
     {
         $this->is_new_session =  $new_session;
     }
