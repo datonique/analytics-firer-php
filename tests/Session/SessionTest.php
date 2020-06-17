@@ -30,6 +30,7 @@ class SessionTest extends TestCase
 
     // TODO: test cookie expire
     // TODO: session id creation
-    // TOOD: browser and OS versions
+    // TODO: browser and OS versions
+    // TODO: test new session is set (true and false)
 
 }

@@ -7,6 +7,7 @@ use GuzzleHttp\Client as HttpClient;
 use GuzzleHttp\Command\Guzzle\GuzzleClient;
 use datonique\Analytic\ButtonClick;
 use datonique\Analytic\PageView;
+use datonique\Analytic\SessionStart;
 use datonique\Firer\Firer;
 use datonique\Session\Session;
 use datonique\Session\Cookie;
@@ -75,6 +76,15 @@ class AnalyticsFirer
             // Start session if none
             $this->session = new Session(new Cookie(), $config['product_shortname'], $config['product_description']);
         }
+
+        if (isset($config['user_info'])) {
+            // TODO: validate user info
+            $this->session->setUserInfo($config['user_info']);
+        }
+
+        if ($this->session->isNewSession()) {
+            $this->sessionStart();
+        }
     }
 
     public function getSession()
@@ -113,6 +123,12 @@ class AnalyticsFirer
             $page_url);
         $page_analytics->setSession($this->session);
         $this->firer->enqueue($page_analytics);
+    }
+
+    public function sessionStart()
+    {
+        $session_start_analytic = new SessionStart();
+        $this->firer->enqueue($session_start_analytic);
     }
 
     public function checkSuccess()

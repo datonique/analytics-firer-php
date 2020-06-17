@@ -49,7 +49,10 @@ class AnalyticsFirerTest extends TestCase
      */
     public function testFireEventButtonClick()
     {
-        $analytics_firer = AnalyticsFirerHelper::createSuccessClient(1, $this->createMock(Cookie::class));
+        $analytics_firer = AnalyticsFirerHelper::createSuccessClient(
+            1, 
+            AnalyticsFirerHelper::getMockCookieWithSession(
+                $this->createMock(Cookie::class)));
         $analytics_firer->buttonClick('test_button', 'test_page', 'test_page', 'test_page');
         $this->assertEquals(1, $analytics_firer->checkSuccess());
         $this->assertEquals(0, $analytics_firer->checkQueue());
@@ -60,7 +63,10 @@ class AnalyticsFirerTest extends TestCase
      */
     public function testFireEventPageView()
     {
-        $analytics_firer = AnalyticsFirerHelper::createSuccessClient(1, $this->createMock(Cookie::class));
+        $analytics_firer = AnalyticsFirerHelper::createSuccessClient(
+            1, 
+            AnalyticsFirerHelper::getMockCookieWithSession(
+                $this->createMock(Cookie::class)));
         $analytics_firer->pageView('test_page', 'test_page', 'test_page');
         $this->assertEquals(1, $analytics_firer->checkSuccess());
         $this->assertEquals(0, $analytics_firer->checkQueue());
@@ -71,7 +77,10 @@ class AnalyticsFirerTest extends TestCase
      */
     public function testFireEventButtonClickFailed()
     {
-        $analytics_firer = AnalyticsFirerHelper::createFailureClient(1, $this->createMock(Cookie::class));
+        $analytics_firer = AnalyticsFirerHelper::createFailureClient(
+            1, 
+            AnalyticsFirerHelper::getMockCookieWithSession(
+                $this->createMock(Cookie::class)));
         $analytics_firer->buttonClick('test_button', 'test_page', 'test_page', 'test_page');
         $this->assertEquals(0, $analytics_firer->checkSuccess());
         $this->assertEquals(0, $analytics_firer->checkQueue());
@@ -83,7 +92,11 @@ class AnalyticsFirerTest extends TestCase
      */
     public function testFireEventPaigeViewFailed()
     {
-        $analytics_firer = AnalyticsFirerHelper::createFailureClient(1, $this->createMock(Cookie::class));
+        $analytics_firer = AnalyticsFirerHelper::createFailureClient(
+            1, 
+            AnalyticsFirerHelper::getMockCookieWithSession(
+                $this->createMock(Cookie::class)));
+
         $analytics_firer->pageView('test_page', 'test_page', 'test_page');
         $this->assertEquals(0, $analytics_firer->checkSuccess());
         $this->assertEquals(0, $analytics_firer->checkQueue());
@@ -106,7 +119,7 @@ class AnalyticsFirerTest extends TestCase
     }
 }
 
-class AnalyticsFirerHelper 
+class AnalyticsFirerHelper extends TestCase
 {
     public static function createSuccessClient(int $num_successes, Cookie $cookie) {
         // Create a mock and queue two responses.
@@ -154,5 +167,12 @@ class AnalyticsFirerHelper
 
             'mock_cookie' => $cookie,
         ]);
+    }
+
+    public static function getMockCookieWithSession(Cookie $mock_cookie) 
+    {
+        $mock_cookie->method('getCookie')
+            ->willReturn('ID');
+        return $mock_cookie;
     }
 }
