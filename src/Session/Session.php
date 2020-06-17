@@ -30,6 +30,7 @@ class Session {
     private $profession_id;
     private $profession_title;
 
+    private $is_new_session;
     static $COOKIE_SESSION_ID = 'datonique_session_id';
     static $MAX_SESSION_LENGTH = 60*30; // 30 min
     /**
@@ -41,10 +42,12 @@ class Session {
     {
         $this->cookie = $cookie;
         $this->session_id = $cookie->getCookie(Session::$COOKIE_SESSION_ID);
-
+        $this->is_new_session = false;
         if (is_null($this->session_id)) {
             $this->session_id = $this->getGuidV4();
-            $this->cookie->setCookie(Session::$COOKIE_SESSION_ID, $this->session_id, time()*Session::$MAX_SESSION_LENGTH);
+            $this->cookie->setCookie(Session::$COOKIE_SESSION_ID, $this->session_id, time()+Session::$MAX_SESSION_LENGTH);
+            $this->setIsNewSession(true);
+            $this->is_new_session = true;
         }
 
         $browser = new Browser();
@@ -70,24 +73,39 @@ class Session {
 
     public function toOutArray()
     {
-        return array(
-            'session_id' => $this->session_id,
+        $out_array = array(
+            'visitor_session_id' => $this->session_id,
             'os' => $this->os,
             'os_version' => $this->os_version,
             'browser' => $this->browser,
-            'broweser_version' => $this->browser_version,
+            'browser_version' => $this->browser_version,
             'platform' => $this->platform,
             'product_description' => $this->product_description,
             'product_shortname' => $this->product_shortname,
-            'visitor_id' => $this->session_id,
-            'user_id' => $this->user_id,
-            'uas_user_id' => $this->uas_user_id,
-            'user_first_name' => $this->user_first_name,
-            'user_last_name' => $this->user_last_name,
-            'user_email' => $this->user_email,
-            'profession_id' => $this->profession_id,
-            'profession_title' => $this->profession_title,
         );
+
+        if (isset($this->user_id)) {
+            $out_array['user_id'] = sprintf('%d', $this->user_id);
+        }
+        if (isset($this->uas_user_id)) {
+            $out_array['uas_user_id'] = sprintf('%d', $this->uas_user_id);
+        }
+        if (isset($this->user_first_name)) {
+            $out_array['user_first_name'] = $this->user_first_name;
+        }
+        if (isset($this->user_last_name)) {
+            $out_array['user_last_name'] = $this->user_last_name;
+        }
+        if (isset($this->user_email)) {
+            $out_array['user_email'] = $this->user_email;
+        }
+        if (isset($this->profession_id)) {
+            $out_array['profession_id'] = $this->profession_id;
+        }
+        if (isset($this->profession_title)) {
+            $out_array['profession_title'] = $this->profession_title;
+        }
+        return $out_array;
     }
 
     private function getGuidV4()
@@ -99,5 +117,28 @@ class Session {
         $data[8] = chr(ord($data[8]) & 0x3f | 0x80); // set bits 6-7 to 10
 
         return vsprintf('%s%s-%s-%s-%s-%s%s%s', str_split(bin2hex($data), 4));
+    }
+
+    public function setIsNewSession(bool $new_session)
+    {
+        $this->is_new_session =  $new_session;
+    }
+
+    public function isNewSession()
+    {
+        return $this->is_new_session;
+    }
+
+    public function setUserInfo(array $user_info) {
+        $this->user_id = $user_info['user_id'];
+        $this->user_first_name = $user_info['user_first_name'];
+        $this->user_last_name = $user_info['user_last_name'];
+        $this->profession_title = $user_info['profession_title'];
+
+        // TODO: still need
+        $this->user_email = $user_info['user_email'];
+        $this->uas_user_id = $user_info['uas_user_id'];
+        $this->profession_id = $user_info['profession_id'];
+
     }
 }

@@ -7,6 +7,6 @@ class Cookie {
         setcookie($cookie_name, $cookie_value, $cookie_time);
     }
     public function getCookie(string $cookie_name) {
-        return $_COOKIE[$cookie_name];
+        return isset($_COOKIE[$cookie_name]) ? $_COOKIE[$cookie_name] : null;
     }
 }
