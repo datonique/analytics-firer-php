@@ -73,7 +73,7 @@ class Session {
 
     public function toOutArray()
     {
-        return array(
+        $out_array = array(
             'visitor_session_id' => $this->session_id,
             'os' => $this->os,
             'os_version' => $this->os_version,
@@ -82,15 +82,30 @@ class Session {
             'platform' => $this->platform,
             'product_description' => $this->product_description,
             'product_shortname' => $this->product_shortname,
-            'visitor_id' => $this->session_id,
-            'user_id' => $this->user_id,
-            'uas_user_id' => $this->uas_user_id,
-            'user_first_name' => $this->user_first_name,
-            'user_last_name' => $this->user_last_name,
-            'user_email' => $this->user_email,
-            'profession_id' => $this->profession_id,
-            'profession_title' => $this->profession_title,
         );
+
+        if (isset($this->user_id)) {
+            $out_array['user_id'] = sprintf('%d', $this->user_id);
+        }
+        if (isset($this->uas_user_id)) {
+            $out_array['uas_user_id'] = sprintf('%d', $this->uas_user_id);
+        }
+        if (isset($this->user_first_name)) {
+            $out_array['user_first_name'] = $this->user_first_name;
+        }
+        if (isset($this->user_last_name)) {
+            $out_array['user_last_name'] = $this->user_last_name;
+        }
+        if (isset($this->user_email)) {
+            $out_array['user_email'] = $this->user_email;
+        }
+        if (isset($this->profession_id)) {
+            $out_array['profession_id'] = $this->profession_id;
+        }
+        if (isset($this->profession_title)) {
+            $out_array['profession_title'] = $this->profession_title;
+        }
+        return $out_array;
     }
 
     private function getGuidV4()
