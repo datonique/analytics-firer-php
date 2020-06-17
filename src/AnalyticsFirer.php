@@ -45,6 +45,9 @@ class AnalyticsFirer
         if (is_null($config['client_secret'])) {
             throw new Exception("Need a client_secret to initialize");
         }
+        if (is_null($config['api_key'])) {
+            throw new Exception("Need a api_key to initialize");
+        }
         if (isset($config['handler']) ) {
             $httpConfig['handler'] = $config['handler'];
             $accessToken = 'XXXX';
@@ -54,7 +57,8 @@ class AnalyticsFirer
 
         $httpConfig['headers'] = array(
             'Content-Type' => 'application/json',
-            'Authorization' => '' . $accessToken
+            'Authorization' => '' . $accessToken,
+            'x-api-key' => $config['api_key'],
         );
 
         // add handler if available for testing

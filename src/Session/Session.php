@@ -45,7 +45,7 @@ class Session {
         $this->is_new_session = false;
         if (is_null($this->session_id)) {
             $this->session_id = $this->getGuidV4();
-            $this->cookie->setCookie(Session::$COOKIE_SESSION_ID, $this->session_id, time()*Session::$MAX_SESSION_LENGTH);
+            $this->cookie->setCookie(Session::$COOKIE_SESSION_ID, $this->session_id, time()+Session::$MAX_SESSION_LENGTH);
             $this->setIsNewSession(true);
             $this->is_new_session = true;
         }
@@ -74,7 +74,7 @@ class Session {
     public function toOutArray()
     {
         return array(
-            'session_id' => $this->session_id,
+            'visitor_session_id' => $this->session_id,
             'os' => $this->os,
             'os_version' => $this->os_version,
             'browser' => $this->browser,
