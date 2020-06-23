@@ -27,6 +27,7 @@ class Session {
     private $user_first_name;
     private $user_last_name;
     private $user_email;
+    private $user_createdate;
     private $profession_id;
     private $profession_title;
 
@@ -99,6 +100,9 @@ class Session {
         if (isset($this->user_email)) {
             $out_array['user_email'] = $this->user_email;
         }
+        if (isset($this->user_createdate)) {
+            $out_array['user_createdate'] = $this->user_createdate;
+        }
         if (isset($this->profession_id)) {
             $out_array['profession_id'] = $this->profession_id;
         }
@@ -134,11 +138,12 @@ class Session {
         $this->user_first_name = $user_info['user_first_name'];
         $this->user_last_name = $user_info['user_last_name'];
         $this->profession_title = $user_info['profession_title'];
+        $this->user_email = $user_info['user_email'];
+        $this->profession_id = $user_info['profession_id'];
+        $this->user_createdate = $user_info['user_createdate'];
 
         // TODO: still need
-        $this->user_email = $user_info['user_email'];
         $this->uas_user_id = $user_info['uas_user_id'];
-        $this->profession_id = $user_info['profession_id'];
 
     }
 }
