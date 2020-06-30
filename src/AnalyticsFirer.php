@@ -37,19 +37,19 @@ class AnalyticsFirer
     public function __construct(array $config = [])
     {
         $httpConfig['base_uri'] = $config['base_uri'];
-        if (is_null($config['base_uri'])) {
+        if (!isset($config['base_uri']) || is_null($config['base_uri'])) {
             throw new Exception("Need a base_uri to initialize");
         }
-        if (is_null($config['client_id'])) {
+        if (!isset($config['client_id']) || is_null($config['client_id'])) {
             throw new Exception("Need a client_id to initialize");
         }
-        if (is_null($config['client_secret'])) {
+        if (!isset($config['client_secret']) || is_null($config['client_secret'])) {
             throw new Exception("Need a client_secret to initialize");
         }
-        if (is_null($config['api_key'])) {
+        if (!isset($config['api_key']) || is_null($config['api_key'])) {
             throw new Exception("Need a api_key to initialize");
         }
-        if (is_null($config['is_user_session'])) {
+        if (!isset($config['is_user_session']) || is_null($config['is_user_session'])) {
             throw new Exception("Need is_user_session to initialize");
         }
         if (isset($config['handler']) ) {
