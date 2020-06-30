@@ -5,6 +5,8 @@ namespace datonique\Analytic\AnalyticTest;
 use PHPUnit\Framework\TestCase;
 use datonique\Analytic\ButtonClick;
 use datonique\Analytic\PageView;
+use datonique\Analytic\SessionStart;
+use datonique\Analytic\SubscriptionCancelled;
 use datonique\Session\Session;
 use datonique\Session\Cookie;
 /**
@@ -61,6 +63,29 @@ class AnalyticTest extends TestCase
         $this->assertEquals($out_array['page_php_class_name'], 'test_page_php_class_name');
         $this->assertEquals($out_array['page_url'], 'test_page_url');
     }
+
+    public function testSessionStart()
+    {
+        $page_view = new SessionStart();
+        $cookie = $this->createMock(Cookie::class);
+        $cookie->expects($this->once())->method('setCookie');
+        $page_view->setSession(new Session($cookie, 'test_name', 'test_description'));
+        $out_array = $page_view->toOutArray();
+        $this->assertTrue(SessionTestHelper::testSessionInfoForAnalytic($out_array));
+        $this->assertEquals($out_array['event_name'], 'session_start');
+    }
+
+    public function testSubscriptionCancelled()
+    {
+        $page_view = new SubscriptionCancelled(array());
+        $cookie = $this->createMock(Cookie::class);
+        $cookie->expects($this->once())->method('setCookie');
+        $page_view->setSession(new Session($cookie, 'test_name', 'test_description'));
+        $out_array = $page_view->toOutArray();
+        $this->assertTrue(SessionTestHelper::testSessionInfoForAnalytic($out_array));
+        $this->assertEquals($out_array['event_name'], 'subscription_end');
+        // TODO: subscription cancelled specifics
+    }
 }
 
 class SessionTestHelper
@@ -68,7 +93,7 @@ class SessionTestHelper
     public static function testSessionInfoForAnalytic($out_array) 
     {
         return (isset($out_array['unix_timestamp']) && 
-            isset($out_array['session_id']));
+            isset($out_array['visitor_session_id']));
     }
 
     public static function getMockCookie()

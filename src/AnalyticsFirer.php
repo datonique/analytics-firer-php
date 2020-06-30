@@ -8,6 +8,7 @@ use GuzzleHttp\Command\Guzzle\GuzzleClient;
 use datonique\Analytic\ButtonClick;
 use datonique\Analytic\PageView;
 use datonique\Analytic\SessionStart;
+use datonique\Analytic\SubscriptionCancelled;
 use datonique\Firer\Firer;
 use datonique\Session\Session;
 use datonique\Session\Cookie;
@@ -48,6 +49,9 @@ class AnalyticsFirer
         if (is_null($config['api_key'])) {
             throw new Exception("Need a api_key to initialize");
         }
+        if (is_null($config['is_user_session'])) {
+            throw new Exception("Need is_user_session to initialize");
+        }
         if (isset($config['handler']) ) {
             $httpConfig['handler'] = $config['handler'];
             $accessToken = 'XXXX';
@@ -75,7 +79,7 @@ class AnalyticsFirer
         }
 
         if (isset($config['mock_cookie'])) {
-            $this->session = new Session($config['mock_cookie'], $config['product_shortname'], $config['product_description']);    
+            $this->session = new Session($config['mock_cookie'], $config['product_shortname'], $config['product_description']);
         } else {
             // Start session if none
             $this->session = new Session(new Cookie(), $config['product_shortname'], $config['product_description']);
@@ -86,7 +90,7 @@ class AnalyticsFirer
             $this->session->setUserInfo($config['user_info']);
         }
 
-        if ($this->session->isNewSession()) {
+        if ($this->session->isNewSession() && $config['is_user_session']) {
             $this->sessionStart();
         }
     }
@@ -133,6 +137,42 @@ class AnalyticsFirer
     {
         $session_start_analytic = new SessionStart();
         $this->firer->enqueue($session_start_analytic);
+    }
+
+    public function subscriptionCancelled($subscripiton_info) 
+    {
+        // TODO: verify user info
+        // user_id,
+        // uas_user_id,
+        // user_first_name,
+        // user_last_name,
+        // user_email,
+        // user_createdate,
+        // profession_id,
+        // profession_title,
+
+        // subscription_id,
+        // subscription_start_date,
+        // subscription_end_date,
+        // subscription_type_id,
+        // subscription_type_title,
+        // order_id,	
+        // order_email,
+        // order_createdate,
+        // order_item_quantity,
+        // order_item_price,
+        // order_item_total,
+        // order_promotion_code,
+        // order_promotion_title,
+        // order_promotion_total,
+        // order_groupnum,
+        // order_group_discount_total,
+        // order_total,
+        // automatic_renewal,
+        // braintree_subscription_id
+
+        $subscription_cancelled_analytic = new SubscriptionCancelled($subscripiton_info);
+        $this->firer->enqueue($subscription_cancelled_analytic);
     }
 
     public function checkSuccess()
