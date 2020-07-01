@@ -7,6 +7,7 @@ use GuzzleHttp\Client as HttpClient;
 use GuzzleHttp\Command\Guzzle\GuzzleClient;
 use datonique\Analytic\ButtonClick;
 use datonique\Analytic\PageView;
+use datonique\Analytic\Registration;
 use datonique\Analytic\SessionStart;
 use datonique\Analytic\SubscriptionCancelled;
 use datonique\Firer\Firer;
@@ -136,43 +137,24 @@ class AnalyticsFirer
     public function sessionStart()
     {
         $session_start_analytic = new SessionStart();
+        $session_start_analytic->setSession($this->session);
         $this->firer->enqueue($session_start_analytic);
     }
 
-    public function subscriptionCancelled($subscripiton_info) 
+    public function subscriptionCancelled($user_info, $subscripiton_info)
     {
-        // TODO: verify user info
-        // user_id,
-        // uas_user_id,
-        // user_first_name,
-        // user_last_name,
-        // user_email,
-        // user_createdate,
-        // profession_id,
-        // profession_title,
-
-        // subscription_id,
-        // subscription_start_date,
-        // subscription_end_date,
-        // subscription_type_id,
-        // subscription_type_title,
-        // order_id,	
-        // order_email,
-        // order_createdate,
-        // order_item_quantity,
-        // order_item_price,
-        // order_item_total,
-        // order_promotion_code,
-        // order_promotion_title,
-        // order_promotion_total,
-        // order_groupnum,
-        // order_group_discount_total,
-        // order_total,
-        // automatic_renewal,
-        // braintree_subscription_id
-
+        $this->session->setUserInfo($user_info);
         $subscription_cancelled_analytic = new SubscriptionCancelled($subscripiton_info);
+        $subscription_cancelled_analytic->setSession($this->session);
         $this->firer->enqueue($subscription_cancelled_analytic);
+    }
+
+    public function registrationSucceeded($user_info)
+    {
+        $this->session->setUserInfo($user_info);
+        $registration_succeeded = new Registration(true);
+        $registration_succeeded->setSession($this->session);
+        $this->firer->enqueue($registration_succeeded);
     }
 
     public function checkSuccess()
