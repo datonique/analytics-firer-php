@@ -6,6 +6,7 @@ use Exception;
 use GuzzleHttp\Client as HttpClient;
 use GuzzleHttp\Command\Guzzle\GuzzleClient;
 use datonique\Analytic\ButtonClick;
+use datonique\Analytic\InquisitionEnd;
 use datonique\Analytic\PageView;
 use datonique\Analytic\Registration;
 use datonique\Analytic\SessionStart;
@@ -180,6 +181,13 @@ class AnalyticsFirer
         $registration_succeeded = new Registration(true);
         $registration_succeeded->setSession($this->session);
         $this->firer->enqueue($registration_succeeded);
+    }
+
+    public function inquisitionEnd($inquisition_info)
+    {
+        $inquisition_event = new InquisitionEnd($inquisition_info);
+        $inquisition_event->setSession($this->session);
+        $this->firer->enqueue($inquisition_event);
     }
 
     public function checkSuccess()

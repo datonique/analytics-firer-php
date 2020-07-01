@@ -142,6 +142,19 @@ class AnalyticsFirerTest extends TestCase
         $this->assertEquals(0, $analytics_firer->checkQueue());
     }
 
+    public function testFireEventInquisitionEnd() 
+    {
+        $analytics_firer = AnalyticsFirerHelper::createSuccessClient(
+            1, 
+            AnalyticsFirerHelper::getMockCookieWithSession(
+                $this->createMock(Cookie::class)),
+            false);
+        // TODO: check here
+        $analytics_firer->inquisitionEnd(array());
+        $this->assertEquals(1, $analytics_firer->checkSuccess());
+        $this->assertEquals(0, $analytics_firer->checkQueue());
+    }
+
     /**
      * Test fail event ButtonClick
      */

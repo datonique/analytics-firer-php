@@ -3,6 +3,7 @@
 namespace datonique\Analytic\AnalyticTest;
 
 use PHPUnit\Framework\TestCase;
+use datonique\Analytic\InquisitionEnd;
 use datonique\Analytic\ButtonClick;
 use datonique\Analytic\PageView;
 use datonique\Analytic\SessionStart;
@@ -96,6 +97,18 @@ class AnalyticTest extends TestCase
         $out_array = $page_view->toOutArray();
         $this->assertTrue(SessionTestHelper::testSessionInfoForAnalytic($out_array));
         $this->assertEquals($out_array['event_name'], 'free_trial_end');
+        // TODO: subscription cancelled specifics
+    }
+
+    public function testInquisitionEnd()
+    {
+        $page_view = new InquisitionEnd(array());
+        $cookie = $this->createMock(Cookie::class);
+        $cookie->expects($this->once())->method('setCookie');
+        $page_view->setSession(new Session($cookie, 'test_name', 'test_description'));
+        $out_array = $page_view->toOutArray();
+        $this->assertTrue(SessionTestHelper::testSessionInfoForAnalytic($out_array));
+        $this->assertEquals($out_array['event_name'], 'inquisition_end');
         // TODO: subscription cancelled specifics
     }
 }
