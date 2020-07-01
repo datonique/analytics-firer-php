@@ -77,13 +77,25 @@ class AnalyticTest extends TestCase
 
     public function testSubscriptionCancelled()
     {
-        $page_view = new SubscriptionCancelled(array());
+        $page_view = new SubscriptionCancelled(array(), false);
         $cookie = $this->createMock(Cookie::class);
         $cookie->expects($this->once())->method('setCookie');
         $page_view->setSession(new Session($cookie, 'test_name', 'test_description'));
         $out_array = $page_view->toOutArray();
         $this->assertTrue(SessionTestHelper::testSessionInfoForAnalytic($out_array));
         $this->assertEquals($out_array['event_name'], 'subscription_end');
+        // TODO: subscription cancelled specifics
+    }
+
+    public function testFreeTrialCancelled()
+    {
+        $page_view = new SubscriptionCancelled(array(), true);
+        $cookie = $this->createMock(Cookie::class);
+        $cookie->expects($this->once())->method('setCookie');
+        $page_view->setSession(new Session($cookie, 'test_name', 'test_description'));
+        $out_array = $page_view->toOutArray();
+        $this->assertTrue(SessionTestHelper::testSessionInfoForAnalytic($out_array));
+        $this->assertEquals($out_array['event_name'], 'free_trial_end');
         // TODO: subscription cancelled specifics
     }
 }

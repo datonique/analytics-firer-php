@@ -10,6 +10,7 @@ use datonique\Analytic\PageView;
 use datonique\Analytic\Registration;
 use datonique\Analytic\SessionStart;
 use datonique\Analytic\SubscriptionCancelled;
+use datonique\Analytic\SubscriptionStart;
 use datonique\Firer\Firer;
 use datonique\Session\Session;
 use datonique\Session\Cookie;
@@ -144,9 +145,33 @@ class AnalyticsFirer
     public function subscriptionCancelled($user_info, $subscripiton_info)
     {
         $this->session->setUserInfo($user_info);
-        $subscription_cancelled_analytic = new SubscriptionCancelled($subscripiton_info);
+        $subscription_cancelled_analytic = new SubscriptionCancelled($subscripiton_info, false);
         $subscription_cancelled_analytic->setSession($this->session);
         $this->firer->enqueue($subscription_cancelled_analytic);
+    }
+
+    public function freeTrialCancelled($user_info, $subscripiton_info)
+    {
+        $this->session->setUserInfo($user_info);
+        $subscription_cancelled_analytic = new SubscriptionCancelled($subscripiton_info, true);
+        $subscription_cancelled_analytic->setSession($this->session);
+        $this->firer->enqueue($subscription_cancelled_analytic);
+    }
+
+    public function subscriptionStart($user_info, $subscripiton_info)
+    {
+        $this->session->setUserInfo($user_info);
+        $subscription_start_analytic = new SubscriptionStart($subscripiton_info, false);
+        $subscription_start_analytic->setSession($this->session);
+        $this->firer->enqueue($subscription_start_analytic);
+    }
+
+    public function freeTrialStart($user_info, $subscripiton_info) 
+    {
+        $this->session->setUserInfo($user_info);
+        $subscription_start_analytic = new SubscriptionStart($subscripiton_info, true);
+        $subscription_start_analytic->setSession($this->session);
+        $this->firer->enqueue($subscription_start_analytic);
     }
 
     public function registrationSucceeded($user_info)
