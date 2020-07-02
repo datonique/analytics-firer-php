@@ -7,6 +7,7 @@ use GuzzleHttp\Client as HttpClient;
 use GuzzleHttp\Command\Guzzle\GuzzleClient;
 use datonique\Analytic\ButtonClick;
 use datonique\Analytic\InquisitionEnd;
+use datonique\Analytic\InquisitionProgress;
 use datonique\Analytic\PageView;
 use datonique\Analytic\Registration;
 use datonique\Analytic\SessionStart;
@@ -110,28 +111,19 @@ class AnalyticsFirer
 
     public function buttonClick(
         string $button_name, 
-        string $html_page_title, 
-        string $page_php_class_name, 
-        string $page_url)
+        array $page_info)
     {
         $button_analytic = new ButtonClick(        
             $button_name, 
-            $html_page_title, 
-            $page_php_class_name, 
-            $page_url);
+            $page_info);
         $button_analytic->setSession($this->session);
         $this->firer->enqueue($button_analytic);
     }
 
-    public function pageView(
-        string $html_page_title, 
-        string $page_php_class_name, 
-        string $page_url)
+    public function pageView(array $page_info)
     {
         $page_analytics = new PageView( 
-            $html_page_title, 
-            $page_php_class_name, 
-            $page_url);
+            $page_info);
         $page_analytics->setSession($this->session);
         $this->firer->enqueue($page_analytics);
     }
@@ -143,7 +135,7 @@ class AnalyticsFirer
         $this->firer->enqueue($session_start_analytic);
     }
 
-    public function subscriptionCancelled($user_info, $subscripiton_info)
+    public function subscriptionCancelled(array $user_info, array $subscripiton_info)
     {
         $this->session->setUserInfo($user_info);
         $subscription_cancelled_analytic = new SubscriptionCancelled($subscripiton_info, false);
@@ -151,7 +143,7 @@ class AnalyticsFirer
         $this->firer->enqueue($subscription_cancelled_analytic);
     }
 
-    public function freeTrialCancelled($user_info, $subscripiton_info)
+    public function freeTrialCancelled(array $user_info, array $subscripiton_info)
     {
         $this->session->setUserInfo($user_info);
         $subscription_cancelled_analytic = new SubscriptionCancelled($subscripiton_info, true);
@@ -159,7 +151,7 @@ class AnalyticsFirer
         $this->firer->enqueue($subscription_cancelled_analytic);
     }
 
-    public function subscriptionStart($user_info, $subscripiton_info)
+    public function subscriptionStart(array $user_info, array $subscripiton_info)
     {
         $this->session->setUserInfo($user_info);
         $subscription_start_analytic = new SubscriptionStart($subscripiton_info, false);
@@ -167,7 +159,7 @@ class AnalyticsFirer
         $this->firer->enqueue($subscription_start_analytic);
     }
 
-    public function freeTrialStart($user_info, $subscripiton_info) 
+    public function freeTrialStart(array $user_info, array $subscripiton_info) 
     {
         $this->session->setUserInfo($user_info);
         $subscription_start_analytic = new SubscriptionStart($subscripiton_info, true);
@@ -175,17 +167,24 @@ class AnalyticsFirer
         $this->firer->enqueue($subscription_start_analytic);
     }
 
-    public function registrationSucceeded($user_info)
+    public function registrationSucceeded(array $user_info, array $page_info)
     {
         $this->session->setUserInfo($user_info);
-        $registration_succeeded = new Registration(true);
+        $registration_succeeded = new Registration(true, $page_info);
         $registration_succeeded->setSession($this->session);
         $this->firer->enqueue($registration_succeeded);
     }
 
-    public function inquisitionEnd($inquisition_info)
+    public function inquisitionEnd(array $inquisition_info, array $episode_info, array $page_info)
     {
-        $inquisition_event = new InquisitionEnd($inquisition_info);
+        $inquisition_event = new InquisitionEnd($inquisition_info, $episode_info, $page_info);
+        $inquisition_event->setSession($this->session);
+        $this->firer->enqueue($inquisition_event);
+    }
+
+    public function inquisitionProgress(array $inquisition_info, array $episode_info, array $page_info)
+    {
+        $inquisition_event = new InquisitionProgress($inquisition_info, $episode_info, $page_info);
         $inquisition_event->setSession($this->session);
         $this->firer->enqueue($inquisition_event);
     }

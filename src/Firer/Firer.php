@@ -188,7 +188,7 @@ class Firer
         $analytic_out = (object) array_filter((array) $analytic->toOutArray(), function ($val) {
             return !is_null($val);
         });
-        echo print_r($analytic_out);
+        // echo print_r($analytic_out);
         $response = $this->client->put('', [
             'json'    => $analytic_out
         ]);

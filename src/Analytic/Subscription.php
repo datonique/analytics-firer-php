@@ -38,7 +38,7 @@ abstract class Subscription extends Analytic {
         string $subsription_event
         )
     {
-        parent::__construct($subsription_event);
+        parent::__construct($subsription_event, array());
         $this->subscription_id = isset($subscription_info['subscription_id']) ? $subscription_info['subscription_id'] : null;
         $this->subscription_start_date = isset($subscription_info['subscription_start_date']) ? $subscription_info['subscription_start_date'] : null;
         $this->subscription_end_date = isset($subscription_info['subscription_end_date']) ? $subscription_info['subscription_end_date'] : null;

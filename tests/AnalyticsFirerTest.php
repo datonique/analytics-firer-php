@@ -54,7 +54,7 @@ class AnalyticsFirerTest extends TestCase
             AnalyticsFirerHelper::getMockCookieWithSession(
                 $this->createMock(Cookie::class)),
             true);
-        $analytics_firer->buttonClick('test_button', 'test_page', 'test_page', 'test_page');
+        $analytics_firer->buttonClick('test_button', AnalyticsFirerHelper::getTestPageInfo());
         $this->assertEquals(1, $analytics_firer->checkSuccess());
         $this->assertEquals(0, $analytics_firer->checkQueue());
     }
@@ -69,7 +69,7 @@ class AnalyticsFirerTest extends TestCase
             AnalyticsFirerHelper::getMockCookieWithSession(
                 $this->createMock(Cookie::class)),
             true);
-        $analytics_firer->pageView('test_page', 'test_page', 'test_page');
+        $analytics_firer->pageView(AnalyticsFirerHelper::getTestPageInfo());
         $this->assertEquals(1, $analytics_firer->checkSuccess());
         $this->assertEquals(0, $analytics_firer->checkQueue());
     }
@@ -137,7 +137,7 @@ class AnalyticsFirerTest extends TestCase
                 $this->createMock(Cookie::class)),
             false);
         // TODO: check here
-        $analytics_firer->RegistrationSucceeded(array());
+        $analytics_firer->RegistrationSucceeded(array(), AnalyticsFirerHelper::getTestPageInfo());
         $this->assertEquals(1, $analytics_firer->checkSuccess());
         $this->assertEquals(0, $analytics_firer->checkQueue());
     }
@@ -150,7 +150,20 @@ class AnalyticsFirerTest extends TestCase
                 $this->createMock(Cookie::class)),
             false);
         // TODO: check here
-        $analytics_firer->inquisitionEnd(array());
+        $analytics_firer->inquisitionEnd(array(), array(), AnalyticsFirerHelper::getTestPageInfo());
+        $this->assertEquals(1, $analytics_firer->checkSuccess());
+        $this->assertEquals(0, $analytics_firer->checkQueue());
+    }
+
+    public function testFireEventInquisitionProgress() 
+    {
+        $analytics_firer = AnalyticsFirerHelper::createSuccessClient(
+            1, 
+            AnalyticsFirerHelper::getMockCookieWithSession(
+                $this->createMock(Cookie::class)),
+            false);
+        // TODO: check here
+        $analytics_firer->inquisitionProgress(array(), array(), AnalyticsFirerHelper::getTestPageInfo());
         $this->assertEquals(1, $analytics_firer->checkSuccess());
         $this->assertEquals(0, $analytics_firer->checkQueue());
     }
@@ -165,7 +178,7 @@ class AnalyticsFirerTest extends TestCase
             AnalyticsFirerHelper::getMockCookieWithSession(
                 $this->createMock(Cookie::class)),
             true);
-        $analytics_firer->buttonClick('test_button', 'test_page', 'test_page', 'test_page');
+        $analytics_firer->buttonClick('test_button', AnalyticsFirerHelper::getTestPageInfo());
         $this->assertEquals(0, $analytics_firer->checkSuccess());
         $this->assertEquals(0, $analytics_firer->checkQueue());
         $this->assertEquals(1, $analytics_firer->checkFailed());
@@ -182,7 +195,7 @@ class AnalyticsFirerTest extends TestCase
                 $this->createMock(Cookie::class)),
             true);
 
-        $analytics_firer->pageView('test_page', 'test_page', 'test_page');
+        $analytics_firer->pageView(AnalyticsFirerHelper::getTestPageInfo());
         $this->assertEquals(0, $analytics_firer->checkSuccess());
         $this->assertEquals(0, $analytics_firer->checkQueue());
         $this->assertEquals(1, $analytics_firer->checkFailed());
@@ -263,5 +276,14 @@ class AnalyticsFirerHelper extends TestCase
         $mock_cookie->method('getCookie')
             ->willReturn('ID');
         return $mock_cookie;
+    }
+
+    public static function getTestPageInfo()
+    {
+        return array(
+            'html_page_title' =>'test_page_html',   
+            'page_php_class_name' => 'test_page_php_class_name',    
+            'page_url' => 'test_page_url'   
+        );
     }
 }
