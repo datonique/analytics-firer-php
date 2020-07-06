@@ -13,6 +13,7 @@ use datonique\Analytic\Registration;
 use datonique\Analytic\SessionStart;
 use datonique\Analytic\SubscriptionCancelled;
 use datonique\Analytic\SubscriptionStart;
+use datonique\Analytic\SubscriptionRenewed;
 use datonique\Firer\Firer;
 use datonique\Session\Session;
 use datonique\Session\Cookie;
@@ -157,6 +158,14 @@ class AnalyticsFirer
         $subscription_start_analytic = new SubscriptionStart($subscripiton_info, false);
         $subscription_start_analytic->setSession($this->session);
         $this->firer->enqueue($subscription_start_analytic);
+    }
+
+    public function subscriptionRenewed(array $user_info, array $subscripiton_info)
+    {
+        $this->session->setUserInfo($user_info);
+        $subscription_renewed_analytic = new SubscriptionRenewed($subscripiton_info);
+        $subscription_renewed_analytic->setSession($this->session);
+        $this->firer->enqueue($subscription_renewed_analytic);
     }
 
     public function freeTrialStart(array $user_info, array $subscripiton_info) 
