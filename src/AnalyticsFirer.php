@@ -6,8 +6,13 @@ use Exception;
 use GuzzleHttp\Client as HttpClient;
 use GuzzleHttp\Command\Guzzle\GuzzleClient;
 use datonique\Analytic\ButtonClick;
+use datonique\Analytic\InquisitionEnd;
+use datonique\Analytic\InquisitionProgress;
 use datonique\Analytic\PageView;
+use datonique\Analytic\Registration;
 use datonique\Analytic\SessionStart;
+use datonique\Analytic\SubscriptionCancelled;
+use datonique\Analytic\SubscriptionStart;
 use datonique\Firer\Firer;
 use datonique\Session\Session;
 use datonique\Session\Cookie;
@@ -36,17 +41,20 @@ class AnalyticsFirer
     public function __construct(array $config = [])
     {
         $httpConfig['base_uri'] = $config['base_uri'];
-        if (is_null($config['base_uri'])) {
+        if (!isset($config['base_uri']) || is_null($config['base_uri'])) {
             throw new Exception("Need a base_uri to initialize");
         }
-        if (is_null($config['client_id'])) {
+        if (!isset($config['client_id']) || is_null($config['client_id'])) {
             throw new Exception("Need a client_id to initialize");
         }
-        if (is_null($config['client_secret'])) {
+        if (!isset($config['client_secret']) || is_null($config['client_secret'])) {
             throw new Exception("Need a client_secret to initialize");
         }
-        if (is_null($config['api_key'])) {
+        if (!isset($config['api_key']) || is_null($config['api_key'])) {
             throw new Exception("Need a api_key to initialize");
+        }
+        if (!isset($config['is_user_session']) || is_null($config['is_user_session'])) {
+            throw new Exception("Need is_user_session to initialize");
         }
         if (isset($config['handler']) ) {
             $httpConfig['handler'] = $config['handler'];
@@ -75,7 +83,7 @@ class AnalyticsFirer
         }
 
         if (isset($config['mock_cookie'])) {
-            $this->session = new Session($config['mock_cookie'], $config['product_shortname'], $config['product_description']);    
+            $this->session = new Session($config['mock_cookie'], $config['product_shortname'], $config['product_description']);
         } else {
             // Start session if none
             $this->session = new Session(new Cookie(), $config['product_shortname'], $config['product_description']);
@@ -86,7 +94,7 @@ class AnalyticsFirer
             $this->session->setUserInfo($config['user_info']);
         }
 
-        if ($this->session->isNewSession()) {
+        if ($this->session->isNewSession() && $config['is_user_session']) {
             $this->sessionStart();
         }
     }
@@ -103,28 +111,19 @@ class AnalyticsFirer
 
     public function buttonClick(
         string $button_name, 
-        string $html_page_title, 
-        string $page_php_class_name, 
-        string $page_url)
+        array $page_info)
     {
         $button_analytic = new ButtonClick(        
             $button_name, 
-            $html_page_title, 
-            $page_php_class_name, 
-            $page_url);
+            $page_info);
         $button_analytic->setSession($this->session);
         $this->firer->enqueue($button_analytic);
     }
 
-    public function pageView(
-        string $html_page_title, 
-        string $page_php_class_name, 
-        string $page_url)
+    public function pageView(array $page_info)
     {
         $page_analytics = new PageView( 
-            $html_page_title, 
-            $page_php_class_name, 
-            $page_url);
+            $page_info);
         $page_analytics->setSession($this->session);
         $this->firer->enqueue($page_analytics);
     }
@@ -132,7 +131,62 @@ class AnalyticsFirer
     public function sessionStart()
     {
         $session_start_analytic = new SessionStart();
+        $session_start_analytic->setSession($this->session);
         $this->firer->enqueue($session_start_analytic);
+    }
+
+    public function subscriptionCancelled(array $user_info, array $subscripiton_info)
+    {
+        $this->session->setUserInfo($user_info);
+        $subscription_cancelled_analytic = new SubscriptionCancelled($subscripiton_info, false);
+        $subscription_cancelled_analytic->setSession($this->session);
+        $this->firer->enqueue($subscription_cancelled_analytic);
+    }
+
+    public function freeTrialCancelled(array $user_info, array $subscripiton_info)
+    {
+        $this->session->setUserInfo($user_info);
+        $subscription_cancelled_analytic = new SubscriptionCancelled($subscripiton_info, true);
+        $subscription_cancelled_analytic->setSession($this->session);
+        $this->firer->enqueue($subscription_cancelled_analytic);
+    }
+
+    public function subscriptionStart(array $user_info, array $subscripiton_info)
+    {
+        $this->session->setUserInfo($user_info);
+        $subscription_start_analytic = new SubscriptionStart($subscripiton_info, false);
+        $subscription_start_analytic->setSession($this->session);
+        $this->firer->enqueue($subscription_start_analytic);
+    }
+
+    public function freeTrialStart(array $user_info, array $subscripiton_info) 
+    {
+        $this->session->setUserInfo($user_info);
+        $subscription_start_analytic = new SubscriptionStart($subscripiton_info, true);
+        $subscription_start_analytic->setSession($this->session);
+        $this->firer->enqueue($subscription_start_analytic);
+    }
+
+    public function registrationSucceeded(array $user_info, array $page_info)
+    {
+        $this->session->setUserInfo($user_info);
+        $registration_succeeded = new Registration(true, $page_info);
+        $registration_succeeded->setSession($this->session);
+        $this->firer->enqueue($registration_succeeded);
+    }
+
+    public function inquisitionEnd(array $inquisition_info, array $episode_info, array $page_info)
+    {
+        $inquisition_event = new InquisitionEnd($inquisition_info, $episode_info, $page_info);
+        $inquisition_event->setSession($this->session);
+        $this->firer->enqueue($inquisition_event);
+    }
+
+    public function inquisitionProgress(array $inquisition_info, array $episode_info, array $page_info)
+    {
+        $inquisition_event = new InquisitionProgress($inquisition_info, $episode_info, $page_info);
+        $inquisition_event->setSession($this->session);
+        $this->firer->enqueue($inquisition_event);
     }
 
     public function checkSuccess()

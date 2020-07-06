@@ -52,7 +52,7 @@ class Firer
      *
      * @var integer
      */
-    private $maxQueueSize = 10000;
+    private $maxQueueSize = 1;
 
     /**
      * Determines how many operations are sent to Segment.io in a single request.
@@ -185,8 +185,11 @@ class Firer
      */
     private function sendRequest(Analytic $analytic) 
     {
+        $analytic_out = (object) array_filter((array) $analytic->toOutArray(), function ($val) {
+            return !is_null($val);
+        });
         $response = $this->client->put('', [
-            'json'    => $analytic->toOutArray()
+            'body'    => json_encode($analytic_out, JSON_NUMERIC_CHECK | JSON_PRESERVE_ZERO_FRACTION)
         ]);
 
         return $response;
