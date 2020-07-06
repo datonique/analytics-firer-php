@@ -86,10 +86,10 @@ class Session {
         );
 
         if (isset($this->user_id)) {
-            $out_array['user_id'] = sprintf('%d', $this->user_id);
+            $out_array['user_id'] = sprintf('%s', $this->user_id);
         }
         if (isset($this->uas_user_id)) {
-            $out_array['uas_user_id'] = sprintf('%d', $this->uas_user_id);
+            $out_array['uas_user_id'] = sprintf('%s', $this->uas_user_id);
         }
         if (isset($this->user_first_name)) {
             $out_array['user_first_name'] = $this->user_first_name;

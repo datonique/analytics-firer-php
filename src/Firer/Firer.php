@@ -139,7 +139,7 @@ class Firer
             } catch (ClientException $e) {
                 array_push($this->failed_queue, $analytic);
                 if ($e->hasResponse()) {
-                    echo Psr7\str($e->getResponse());
+                    // echo Psr7\str($e->getResponse());
                 }
             }
         }

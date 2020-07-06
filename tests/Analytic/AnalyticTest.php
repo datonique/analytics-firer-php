@@ -8,7 +8,9 @@ use datonique\Analytic\InquisitionProgress;
 use datonique\Analytic\ButtonClick;
 use datonique\Analytic\PageView;
 use datonique\Analytic\SessionStart;
+use datonique\Analytic\SubscriptionStart;
 use datonique\Analytic\SubscriptionCancelled;
+use datonique\Analytic\SubscriptionRenewed;
 use datonique\Session\Session;
 use datonique\Session\Cookie;
 /**
@@ -75,25 +77,61 @@ class AnalyticTest extends TestCase
 
     public function testSubscriptionCancelled()
     {
-        $page_view = new SubscriptionCancelled(array(), false);
+        $subscription_cancelled = new SubscriptionCancelled(array(), false);
         $cookie = $this->createMock(Cookie::class);
         $cookie->expects($this->once())->method('setCookie');
-        $page_view->setSession(new Session($cookie, 'test_name', 'test_description'));
-        $out_array = $page_view->toOutArray();
+        $subscription_cancelled->setSession(new Session($cookie, 'test_name', 'test_description'));
+        $out_array = $subscription_cancelled->toOutArray();
         $this->assertTrue(SessionTestHelper::testSessionInfoForAnalytic($out_array));
         $this->assertEquals($out_array['event_name'], 'subscription_end');
         // TODO: subscription cancelled specifics
     }
 
-    public function testFreeTrialCancelled()
+    public function testSubscriptionStart()
     {
-        $page_view = new SubscriptionCancelled(array(), true);
+        $subscription_start = new SubscriptionStart(array(), false);
         $cookie = $this->createMock(Cookie::class);
         $cookie->expects($this->once())->method('setCookie');
-        $page_view->setSession(new Session($cookie, 'test_name', 'test_description'));
-        $out_array = $page_view->toOutArray();
+        $subscription_start->setSession(new Session($cookie, 'test_name', 'test_description'));
+        $out_array = $subscription_start->toOutArray();
+        $this->assertTrue(SessionTestHelper::testSessionInfoForAnalytic($out_array));
+        $this->assertEquals($out_array['event_name'], 'subscription_start');
+        // TODO: subscription cancelled specifics
+    }
+
+    public function testSubscriptionRenewed()
+    {
+        $subscription_renewed = new SubscriptionRenewed(array());
+        $cookie = $this->createMock(Cookie::class);
+        $cookie->expects($this->once())->method('setCookie');
+        $subscription_renewed->setSession(new Session($cookie, 'test_name', 'test_description'));
+        $out_array = $subscription_renewed->toOutArray();
+        $this->assertTrue(SessionTestHelper::testSessionInfoForAnalytic($out_array));
+        $this->assertEquals($out_array['event_name'], 'subscription_renewed');
+        // TODO: subscription cancelled specifics
+    }
+
+    public function testFreeTrialCancelled()
+    {
+        $free_trial = new SubscriptionCancelled(array(), true);
+        $cookie = $this->createMock(Cookie::class);
+        $cookie->expects($this->once())->method('setCookie');
+        $free_trial->setSession(new Session($cookie, 'test_name', 'test_description'));
+        $out_array = $free_trial->toOutArray();
         $this->assertTrue(SessionTestHelper::testSessionInfoForAnalytic($out_array));
         $this->assertEquals($out_array['event_name'], 'free_trial_end');
+        // TODO: subscription cancelled specifics
+    }
+
+    public function testFreeTrialStart()
+    {
+        $subscription_start = new SubscriptionStart(array(), true);
+        $cookie = $this->createMock(Cookie::class);
+        $cookie->expects($this->once())->method('setCookie');
+        $subscription_start->setSession(new Session($cookie, 'test_name', 'test_description'));
+        $out_array = $subscription_start->toOutArray();
+        $this->assertTrue(SessionTestHelper::testSessionInfoForAnalytic($out_array));
+        $this->assertEquals($out_array['event_name'], 'free_trial_start');
         // TODO: subscription cancelled specifics
     }
 
