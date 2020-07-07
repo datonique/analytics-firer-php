@@ -184,6 +184,13 @@ class AnalyticsFirer
         $this->firer->enqueue($registration_succeeded);
     }
 
+    public function registrationFailed($page_info)
+    {
+        $registration_failed = new Registration(false, $page_info);
+        $registration_failed->setSession($this->session);
+        $this->firer->enqueue($registration_failed);
+    }
+
     public function inquisitionEnd(array $inquisition_info, array $episode_info, array $page_info)
     {
         $inquisition_event = new InquisitionEnd($inquisition_info, $episode_info, $page_info);

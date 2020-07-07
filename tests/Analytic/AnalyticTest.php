@@ -7,6 +7,7 @@ use datonique\Analytic\InquisitionEnd;
 use datonique\Analytic\InquisitionProgress;
 use datonique\Analytic\ButtonClick;
 use datonique\Analytic\PageView;
+use datonique\Analytic\Registration;
 use datonique\Analytic\SessionStart;
 use datonique\Analytic\SubscriptionStart;
 use datonique\Analytic\SubscriptionCancelled;
@@ -159,6 +160,36 @@ class AnalyticTest extends TestCase
         $out_array = $page_view->toOutArray();
         $this->assertTrue(SessionTestHelper::testSessionInfoForAnalytic($out_array));
         $this->assertEquals($out_array['event_name'], 'inquisition_progress');
+        $this->assertEquals($out_array['html_page_title'], 'test_page_html');
+        $this->assertEquals($out_array['page_php_class_name'], 'test_page_php_class_name');
+        $this->assertEquals($out_array['page_url'], 'test_page_url');
+        // TODO: subscription cancelled specifics
+    }
+
+    public function testRegistrationSucceeded()
+    {
+        $page_view = new Registration(true, SessionTestHelper::getTestPageInfo());
+        $cookie = $this->createMock(Cookie::class);
+        $cookie->expects($this->once())->method('setCookie');
+        $page_view->setSession(new Session($cookie, 'test_name', 'test_description'));
+        $out_array = $page_view->toOutArray();
+        $this->assertTrue(SessionTestHelper::testSessionInfoForAnalytic($out_array));
+        $this->assertEquals($out_array['event_name'], 'registration_succeeded');
+        $this->assertEquals($out_array['html_page_title'], 'test_page_html');
+        $this->assertEquals($out_array['page_php_class_name'], 'test_page_php_class_name');
+        $this->assertEquals($out_array['page_url'], 'test_page_url');
+        // TODO: subscription cancelled specifics
+    }
+
+    public function testRegistrationFailed()
+    {
+        $page_view = new Registration(false, SessionTestHelper::getTestPageInfo());
+        $cookie = $this->createMock(Cookie::class);
+        $cookie->expects($this->once())->method('setCookie');
+        $page_view->setSession(new Session($cookie, 'test_name', 'test_description'));
+        $out_array = $page_view->toOutArray();
+        $this->assertTrue(SessionTestHelper::testSessionInfoForAnalytic($out_array));
+        $this->assertEquals($out_array['event_name'], 'registration_failed');
         $this->assertEquals($out_array['html_page_title'], 'test_page_html');
         $this->assertEquals($out_array['page_php_class_name'], 'test_page_php_class_name');
         $this->assertEquals($out_array['page_url'], 'test_page_url');

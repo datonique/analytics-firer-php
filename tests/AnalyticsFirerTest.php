@@ -150,7 +150,20 @@ class AnalyticsFirerTest extends TestCase
                 $this->createMock(Cookie::class)),
             false);
         // TODO: check here
-        $analytics_firer->RegistrationSucceeded(array(), AnalyticsFirerHelper::getTestPageInfo());
+        $analytics_firer->registrationSucceeded(array(), AnalyticsFirerHelper::getTestPageInfo());
+        $this->assertEquals(1, $analytics_firer->checkSuccess());
+        $this->assertEquals(0, $analytics_firer->checkQueue());
+    }
+
+    public function testFireEventRegistrationFailed() 
+    {
+        $analytics_firer = AnalyticsFirerHelper::createSuccessClient(
+            1, 
+            AnalyticsFirerHelper::getMockCookieWithSession(
+                $this->createMock(Cookie::class)),
+            false);
+        // TODO: check here
+        $analytics_firer->registrationFailed(AnalyticsFirerHelper::getTestPageInfo());
         $this->assertEquals(1, $analytics_firer->checkSuccess());
         $this->assertEquals(0, $analytics_firer->checkQueue());
     }
