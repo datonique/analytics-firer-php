@@ -74,14 +74,14 @@ abstract class Subscription extends Analytic {
             'order_createdate' => $this->order_createdate,
             'order_item_quantity' => $this->order_item_quantity,
             'order_item_price' => $this->order_item_price,
-            // 'order_item_total' => $this->order_item_total,
+            'order_item_total' => $this->order_item_total,
             'order_promotion_code' => $this->order_promotion_code,
             'order_promotion_title' => $this->order_promotion_title,
-            // 'order_promotion_total' => $this->order_promotion_total,
+            'order_promotion_total' => $this->order_promotion_total,
             'order_groupnum' => $this->order_groupnum,
-            // 'order_group_discount_total' => $this->order_group_discount_total,
-            // 'order_total' => $this->order_total,
-            // 'automatic_renewal' => $this->automatic_renewal ? 'true' : 'false',
+            'order_group_discount_total' => $this->order_group_discount_total,
+            'order_total' => $this->order_total,
+            'automatic_renewal' => $this->automatic_renewal ? true : false,
             'braintree_subscription_id' => $this->braintree_subscription_id
         ));
     }
