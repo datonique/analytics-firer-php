@@ -81,7 +81,7 @@ abstract class Subscription extends Analytic {
             'order_groupnum' => $this->order_groupnum,
             'order_group_discount_total' => $this->order_group_discount_total,
             'order_total' => $this->order_total,
-            'automatic_renewal' => $this->automatic_renewal ? 'true' : 'false',
+            'automatic_renewal' => $this->automatic_renewal ? true : false,
             'braintree_subscription_id' => $this->braintree_subscription_id
         ));
     }
