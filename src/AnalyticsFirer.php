@@ -15,6 +15,7 @@ use datonique\Analytic\SubscriptionCancelled;
 use datonique\Analytic\SubscriptionStart;
 use datonique\Analytic\SubscriptionRenewed;
 use datonique\Firer\Firer;
+use datonique\Firer\EmptyFirer;
 use datonique\Session\Session;
 use datonique\Session\Cookie;
 
@@ -74,7 +75,11 @@ class AnalyticsFirer
         $client = new HttpClient($httpConfig);
 
         // Create the Client
-        $this->firer = new Firer($client, $config);
+        if (count($_COOKIE) > 0 || isset($config['mock_cookie'])) {
+            $this->firer = new Firer($client, $config);
+        } else {
+            $this->firer = new EmptyFirer();
+        }
 
         if(!isset($config['product_shortname'])) {
             throw new Exception("Need a product_shortname to initialize");

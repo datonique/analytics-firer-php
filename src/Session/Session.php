@@ -46,11 +46,9 @@ class Session {
         $this->is_new_session = false;
         if (is_null($this->session_id)) {
             $this->session_id = $this->getGuidV4();
-            if (count($_COOKIE) > 0) {
-                $this->cookie->setCookie(Session::$COOKIE_SESSION_ID, $this->session_id, time()+Session::$MAX_SESSION_LENGTH);
-                $this->setIsNewSession(true);
-                $this->is_new_session = true;
-            }
+            $this->cookie->setCookie(Session::$COOKIE_SESSION_ID, $this->session_id, time()+Session::$MAX_SESSION_LENGTH);
+            $this->setIsNewSession(true);
+            $this->is_new_session = true;
         }
 
         $browser = new Browser();

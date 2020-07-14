@@ -241,11 +241,19 @@ class AnalyticsFirerTest extends TestCase
             'client_secret' => 'XXXX'
         ]);
     }
+
+    public function testNoCookie()
+    {
+        $analytics_firer = AnalyticsFirerHelper::createSuccessClient(1, null, true);
+        $analytics_firer->pageView(AnalyticsFirerHelper::getTestPageInfo());
+        $this->assertEquals(0, $analytics_firer->checkFailed());
+        $this->assertEquals(0, $analytics_firer->checkSuccess());
+    }
 }
 
 class AnalyticsFirerHelper extends TestCase
 {
-    public static function createSuccessClient(int $num_successes, Cookie $cookie, bool $is_user_session) {
+    public static function createSuccessClient(int $num_successes, Cookie $cookie = null, bool $is_user_session) {
         // Create a mock and queue two responses.
         // TODO: do by number of failures
         $mock = new MockHandler([
