@@ -307,7 +307,7 @@ class AnalyticsFirerHelper extends TestCase
 
     public static function getMockCookieWithSession(Cookie $mock_cookie) 
     {
-        $mock_cookie->method('getCookie')
+        $mock_cookie->method('getSessionFromCookie')
             ->willReturn('ID');
         return $mock_cookie;
     }
