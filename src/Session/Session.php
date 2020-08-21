@@ -32,7 +32,6 @@ class Session {
     private $profession_title;
 
     private $is_new_session;
-    static $COOKIE_SESSION_ID = 'datonique_session_id';
     static $MAX_SESSION_LENGTH = 60*30; // 30 min
     /**
      * Constructor
@@ -42,11 +41,11 @@ class Session {
     public function __construct(Cookie $cookie, string $product_shortname, string $product_description)
     {
         $this->cookie = $cookie;
-        $this->session_id = $cookie->getCookie(Session::$COOKIE_SESSION_ID);
+        $this->session_id = $cookie->getSessionFromCookie();
         $this->is_new_session = false;
         if (is_null($this->session_id)) {
             $this->session_id = $this->getGuidV4();
-            $this->cookie->setCookie(Session::$COOKIE_SESSION_ID, $this->session_id, time()+Session::$MAX_SESSION_LENGTH);
+            $this->cookie->setSessionInCookie($this->session_id, time()+Session::$MAX_SESSION_LENGTH);
             $this->setIsNewSession(true);
             $this->is_new_session = true;
         }

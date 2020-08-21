@@ -36,7 +36,7 @@ class AnalyticTest extends TestCase
             SessionTestHelper::getTestPageInfo()
         );
         $cookie = $this->createMock(Cookie::class);
-        $cookie->expects($this->once())->method('setCookie');
+        $cookie->expects($this->once())->method('setSessionInCookie');
         $page_view->setSession(new Session($cookie, 'test_name', 'test_description'));
         $out_array = $page_view->toOutArray();
         $this->assertTrue(SessionTestHelper::testSessionInfoForAnalytic($out_array));
@@ -54,7 +54,7 @@ class AnalyticTest extends TestCase
             SessionTestHelper::getTestPageInfo()
         );
         $cookie = $this->createMock(Cookie::class);
-        $cookie->expects($this->once())->method('setCookie');
+        $cookie->expects($this->once())->method('setSessionInCookie');
         $page_view->setSession(new Session($cookie, 'test_name', 'test_description'));
         $out_array = $page_view->toOutArray();
         $this->assertTrue(SessionTestHelper::testSessionInfoForAnalytic($out_array));
@@ -69,7 +69,7 @@ class AnalyticTest extends TestCase
     {
         $page_view = new SessionStart();
         $cookie = $this->createMock(Cookie::class);
-        $cookie->expects($this->once())->method('setCookie');
+        $cookie->expects($this->once())->method('setSessionInCookie');
         $page_view->setSession(new Session($cookie, 'test_name', 'test_description'));
         $out_array = $page_view->toOutArray();
         $this->assertTrue(SessionTestHelper::testSessionInfoForAnalytic($out_array));
@@ -80,7 +80,7 @@ class AnalyticTest extends TestCase
     {
         $subscription_cancelled = new SubscriptionCancelled(array(), false);
         $cookie = $this->createMock(Cookie::class);
-        $cookie->expects($this->once())->method('setCookie');
+        $cookie->expects($this->once())->method('setSessionInCookie');
         $subscription_cancelled->setSession(new Session($cookie, 'test_name', 'test_description'));
         $out_array = $subscription_cancelled->toOutArray();
         $this->assertTrue(SessionTestHelper::testSessionInfoForAnalytic($out_array));
@@ -92,7 +92,7 @@ class AnalyticTest extends TestCase
     {
         $subscription_start = new SubscriptionStart(array(), false);
         $cookie = $this->createMock(Cookie::class);
-        $cookie->expects($this->once())->method('setCookie');
+        $cookie->expects($this->once())->method('setSessionInCookie');
         $subscription_start->setSession(new Session($cookie, 'test_name', 'test_description'));
         $out_array = $subscription_start->toOutArray();
         $this->assertTrue(SessionTestHelper::testSessionInfoForAnalytic($out_array));
@@ -104,7 +104,7 @@ class AnalyticTest extends TestCase
     {
         $subscription_renewed = new SubscriptionRenewed(array());
         $cookie = $this->createMock(Cookie::class);
-        $cookie->expects($this->once())->method('setCookie');
+        $cookie->expects($this->once())->method('setSessionInCookie');
         $subscription_renewed->setSession(new Session($cookie, 'test_name', 'test_description'));
         $out_array = $subscription_renewed->toOutArray();
         $this->assertTrue(SessionTestHelper::testSessionInfoForAnalytic($out_array));
@@ -116,7 +116,7 @@ class AnalyticTest extends TestCase
     {
         $free_trial = new SubscriptionCancelled(array(), true);
         $cookie = $this->createMock(Cookie::class);
-        $cookie->expects($this->once())->method('setCookie');
+        $cookie->expects($this->once())->method('setSessionInCookie');
         $free_trial->setSession(new Session($cookie, 'test_name', 'test_description'));
         $out_array = $free_trial->toOutArray();
         $this->assertTrue(SessionTestHelper::testSessionInfoForAnalytic($out_array));
@@ -128,7 +128,7 @@ class AnalyticTest extends TestCase
     {
         $subscription_start = new SubscriptionStart(array(), true);
         $cookie = $this->createMock(Cookie::class);
-        $cookie->expects($this->once())->method('setCookie');
+        $cookie->expects($this->once())->method('setSessionInCookie');
         $subscription_start->setSession(new Session($cookie, 'test_name', 'test_description'));
         $out_array = $subscription_start->toOutArray();
         $this->assertTrue(SessionTestHelper::testSessionInfoForAnalytic($out_array));
@@ -140,7 +140,7 @@ class AnalyticTest extends TestCase
     {
         $page_view = new InquisitionEnd(array(), array(), SessionTestHelper::getTestPageInfo());
         $cookie = $this->createMock(Cookie::class);
-        $cookie->expects($this->once())->method('setCookie');
+        $cookie->expects($this->once())->method('setSessionInCookie');
         $page_view->setSession(new Session($cookie, 'test_name', 'test_description'));
         $out_array = $page_view->toOutArray();
         // echo print_r($out_array);
@@ -155,7 +155,7 @@ class AnalyticTest extends TestCase
     {
         $page_view = new InquisitionProgress(array(), array(), SessionTestHelper::getTestPageInfo());
         $cookie = $this->createMock(Cookie::class);
-        $cookie->expects($this->once())->method('setCookie');
+        $cookie->expects($this->once())->method('setSessionInCookie');
         $page_view->setSession(new Session($cookie, 'test_name', 'test_description'));
         $out_array = $page_view->toOutArray();
         $this->assertTrue(SessionTestHelper::testSessionInfoForAnalytic($out_array));
@@ -170,7 +170,7 @@ class AnalyticTest extends TestCase
     {
         $page_view = new Registration(true, SessionTestHelper::getTestPageInfo());
         $cookie = $this->createMock(Cookie::class);
-        $cookie->expects($this->once())->method('setCookie');
+        $cookie->expects($this->once())->method('setSessionInCookie');
         $page_view->setSession(new Session($cookie, 'test_name', 'test_description'));
         $out_array = $page_view->toOutArray();
         $this->assertTrue(SessionTestHelper::testSessionInfoForAnalytic($out_array));
@@ -185,7 +185,7 @@ class AnalyticTest extends TestCase
     {
         $page_view = new Registration(false, SessionTestHelper::getTestPageInfo());
         $cookie = $this->createMock(Cookie::class);
-        $cookie->expects($this->once())->method('setCookie');
+        $cookie->expects($this->once())->method('setSessionInCookie');
         $page_view->setSession(new Session($cookie, 'test_name', 'test_description'));
         $out_array = $page_view->toOutArray();
         $this->assertTrue(SessionTestHelper::testSessionInfoForAnalytic($out_array));
