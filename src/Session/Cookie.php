@@ -17,7 +17,7 @@ class Cookie {
             'ts' => date("Y-m-d H:i:s")
         );
         $encoded = json_encode($cookie, JSON_UNESCAPED_SLASHES|JSON_UNESCAPED_UNICODE);
-        print_r($encoded);
+
         $this->setCookie(Cookie::$COOKIE_SESSION_ID, $encoded, $session_length);
     }
 
