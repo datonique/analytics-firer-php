@@ -14,7 +14,7 @@ class Cookie {
 
     public function getSessionFromCookie() {
         $cookie = json_decode($this->getCookie(Cookie::$COOKIE_SESSION_ID));
-        return $cookie->session;
+        return isset($cookie->session) ? $cookie->session : null;
     }
 
     public function setSessionInCookie(string $session_id, int $session_length) {
