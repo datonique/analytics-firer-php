@@ -238,7 +238,8 @@ class AnalyticsFirerTest extends TestCase
             'product_description' => 'test_description',
             // just for testing
             'client_id' => 'XXXX',
-            'client_secret' => 'XXXX'
+            'client_secret' => 'XXXX',
+            'ups_cookie_domain' => 'test.com',
         ]);
     }
 
@@ -272,6 +273,7 @@ class AnalyticsFirerHelper extends TestCase
             'handler' => $handlerStack,
             'client_id' => 'XXXX',
             'client_secret' => 'XXXX',
+            'ups_cookie_domain' => 'test.com',
 
             'mock_cookie' => $cookie,
             'api_key' => 'XXX',
@@ -298,7 +300,7 @@ class AnalyticsFirerHelper extends TestCase
             'handler' => $handlerStack,
             'client_id' => 'XXXX',
             'client_secret' => 'XXXX',
-
+            'ups_cookie_domain' => 'test.com',
             'mock_cookie' => $cookie,
             'api_key' => 'XXX',
             'is_user_session' => $is_user_session
