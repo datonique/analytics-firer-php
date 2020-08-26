@@ -58,6 +58,9 @@ class AnalyticsFirer
         if (!isset($config['is_user_session']) || is_null($config['is_user_session'])) {
             throw new Exception("Need is_user_session to initialize");
         }
+        if (!isset($config['ups_cookie_domain']) || is_null($config['ups_cookie_domain'])) {
+            throw new Exception("Need ups_cookie_domain to initialize");
+        }
         if (isset($config['handler']) ) {
             $httpConfig['handler'] = $config['handler'];
             $accessToken = 'XXXX';
@@ -92,7 +95,7 @@ class AnalyticsFirer
             $this->session = new Session($config['mock_cookie'], $config['product_shortname'], $config['product_description']);
         } else {
             // Start session if none
-            $this->session = new Session(new Cookie(), $config['product_shortname'], $config['product_description']);
+            $this->session = new Session(new Cookie($config['ups_cookie_domain']), $config['product_shortname'], $config['product_description']);
         }
 
         if (isset($config['user_info'])) {
