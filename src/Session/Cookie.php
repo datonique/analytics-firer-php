@@ -9,7 +9,7 @@ class Cookie {
     private $domain;
 
     public function __construct(string $domain) {
-        $this->$domain = $domain;
+        $this->domain = $domain;
     }
 
     public function getSessionFromCookie() {
